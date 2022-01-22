@@ -19,7 +19,7 @@ warnings.filterwarnings('always')  # "error", "ignore", "always", "default", "mo
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--dataset", default="./datasets/animals",
               help="path to input dataset")
-ap.add_argument("-m", "--model", default="./Model/MyProcessModel_100.hdf5",
+ap.add_argument("-m", "--model", default="./Model/MyProcessModel.hdf5",
     help="path to the output model")
 ap.add_argument("-o", "--output", default="./Outputs/results_with_MyProcessModel_100.png", 
                help="path to the output loss/accuracy plot")
