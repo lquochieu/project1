@@ -6,8 +6,8 @@ from pyimagesearch.preprocessing import ImageToArrayPreprocessor
 from pyimagesearch.preprocessing import SimplePreprocessor
 from pyimagesearch.datasets import SimpleDatasetLoader
 from pyimagesearch.nn.conv import MyProcessModel
+from pyimagesearch.nn.conv import ShallowNet
 from pyimagesearch.nn.conv import Lenet5
-from pyimagesearch.nn.conv.alexnet import AlexNet
 from tensorflow.keras.optimizers import SGD
 from imutils import paths
 import matplotlib.pyplot as plt
@@ -19,10 +19,12 @@ warnings.filterwarnings('always')  # "error", "ignore", "always", "default", "mo
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--dataset", default="./datasets/animals",
               help="path to input dataset")
-ap.add_argument("-m", "--model", default="./Model/AlexNet_weight.hdf5",
+ap.add_argument("-m", "--model", default="./Model/MyProcessModel_100.hdf5",
     help="path to the output model")
-ap.add_argument("-o", "--output", default="./Outputs/results_with_AlexNet.png", 
+ap.add_argument("-o", "--output", default="./Outputs/results_with_MyProcessModel_100.png", 
                help="path to the output loss/accuracy plot")
+ap.add_argument("-e", "--epochs", default=100, 
+               help="numbers of epochs")
 args = vars(ap.parse_args())
 
 # glab the list of images that we'll be describing
@@ -30,7 +32,7 @@ print("[INFO] loading images...")
 imagePaths = list(paths.list_images(args["dataset"]))
 
 # initialize the image preprocessors
-sp = SimplePreprocessor(227, 227)
+sp = SimplePreprocessor(32, 32)
 iap = ImageToArrayPreprocessor()
 
 # load the dataset from disk then scale the raw pixel intensitives
@@ -50,17 +52,18 @@ testY = LabelBinarizer().fit_transform(testY)
 
 # initialize the optimizer and model
 print("[INFO] compiling model...")
-opt = SGD(lr=0.005)
-model = AlexNet.build(width=32, height=32, depth=3, classes=3)
+opt = SGD(learning_rate=0.005)
+model = ShallowNet.build(width=32, height=32, depth=3, classes=3)
 model.compile(loss="categorical_crossentropy", optimizer=opt,
     metrics=["acc"])
 
 #Analysis model
 model.summary()
 # train the network
+epochs=args["epochs"]
 print("[INFO] training network...")
 H = model.fit(trainX, trainY, validation_data=(testX, testY),
-    batch_size=32, epochs=100, verbose=1)
+    batch_size=32, epochs=epochs, verbose=1)
 
 # save the network to disk
 print("[INFO] serializing network...")
@@ -76,10 +79,10 @@ print(classification_report(testY.argmax(axis=1),
 # plot the training loss and accuracy
 plt.style.use("ggplot")
 plt.figure()
-plt.plot(np.arange(0, 100), H.history["loss"], label="train_loss")
-plt.plot(np.arange(0, 100), H.history["val_loss"], label="val_loss")
-plt.plot(np.arange(0, 100), H.history["acc"], label="train_acc")
-plt.plot(np.arange(0, 100), H.history["val_acc"], label="val_acc")
+plt.plot(np.arange(0, epochs), H.history["loss"], label="train_loss")
+plt.plot(np.arange(0, epochs), H.history["val_loss"], label="val_loss")
+plt.plot(np.arange(0, epochs), H.history["acc"], label="train_acc")
+plt.plot(np.arange(0, epochs), H.history["val_acc"], label="val_acc")
 plt.title("Training Loss and Accuracy with MyProcessModel")
 plt.xlabel("Epoch #")
 plt.ylabel("Loss/Accuracy")
