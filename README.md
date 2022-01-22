@@ -17,7 +17,7 @@ Cats, Dogs, Pandas image classification problem using Convolution Neural Network
     + [Change the training epochs](#Change-the-training-epochs)
     + [Change the name of the saved model file](#Change-the-name-of-the-saved-model-file)
     + [Change the name of the resulting image file](#Change-the-name-of-the-resulting-image-file)
-6. [LOAD MODEL](#LOAD MODEL)
+6. [LOAD MODEL](#LOAD-MODEL)
 7. [DEVELOPMENT](#DEVELOPMENT)
 ## Dependencies
 Python version 3.8 or greater
